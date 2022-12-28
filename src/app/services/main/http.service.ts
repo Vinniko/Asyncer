@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core'
+import { Observable } from 'rxjs';
 import { ajax } from 'rxjs/ajax';
 
 @Injectable()
@@ -7,7 +8,7 @@ export class HttpService {
 
   constructor() {}
 
-  getRandomNumber() {
+  getRandomNumber(): Observable<Array<number>> {
     return ajax.getJSON(this.randomApi);
   }
 }

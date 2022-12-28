@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { map, timer, delay, forkJoin, Subject, switchMap } from 'rxjs';
+import { map, timer, delay, forkJoin, switchMap, Observable} from 'rxjs';
 import { HttpService } from 'src/app/services/main/http.service';
 
 
@@ -10,37 +10,27 @@ import { HttpService } from 'src/app/services/main/http.service';
   providers: [HttpService],
 })
 export class MainComponent implements OnInit {
-  clickStream$ = new Subject();
+  value$: Observable<Array<number>> = new Observable<Array<number>>();
 
-  firstValue: any;
-  secondValue: any;
-  thirdValue: any;
+  firstValue: number = 0;
+  secondValue: number = 0;
+  thirdValue: number = 0;
 
   constructor(private httpService: HttpService) {}
 
   ngOnInit(): void {
-    this.clickStream$
-    .asObservable()
-    .pipe(
-      switchMap(() => this.getRandomNumber()),
-    ).subscribe();
-
-    this.clickStream$.next('');
+    this.getRandoms();
   }
 
-  getRandoms($event: any): void {
-    this.clickStream$.next($event);
-  }
-
-  private getRandomNumber() {
-    return this.httpService.getRandomNumber()
+  getRandoms(): void {
+    this.value$ = this.httpService.getRandomNumber()
       .pipe(
         switchMap(value => forkJoin(
           this.setFirstValue(value),
           this.setSecondValue(value),
           this.setThirdValue(value)
-        )),
-      );
+      )),
+    );
   }
 
   private setFirstValue(value: any) {

@@ -1,4 +1,6 @@
-<div class="container">
+<div hidden>{{ (value$ | async) }}</div>
+
+<div class="container" >
   <p>Первый поток: {{ firstValue }}</p>
 
   <p>Второй поток: {{ secondValue }}</p>
@@ -7,7 +9,7 @@
 </div>
 
 <div class="buttonContainer">
-  <button (click)="getRandoms($event)">
+  <button (click)="getRandoms()">
     SEND
   </button>
 </div>
