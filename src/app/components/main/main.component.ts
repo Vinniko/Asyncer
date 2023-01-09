@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { map, timer, delay, forkJoin, switchMap, Observable} from 'rxjs';
+import { Component } from '@angular/core';
+import {
+  delay, switchMap, Observable, Subject, startWith, shareReplay,
+} from 'rxjs';
 import { HttpService } from 'src/app/services/main/http.service';
-
 
 @Component({
   selector: 'app-main',
@@ -9,48 +10,24 @@ import { HttpService } from 'src/app/services/main/http.service';
   styleUrls: ['./main.component.css'],
   providers: [HttpService],
 })
-export class MainComponent implements OnInit {
-  value$: Observable<Array<number>> = new Observable<Array<number>>();
+export class MainComponent {
+  request$: Subject<void> = new Subject<void>();
 
-  firstValue: number = 0;
-  secondValue: number = 0;
-  thirdValue: number = 0;
+  response$: Observable<Array<number>> = this.request$.pipe(
+    startWith(null),
+    switchMap(() => this.httpService.getRandomNumber()),
+    shareReplay(1),
+  );
+
+  firstValue$ = this.response$;
+
+  secondValue$ = this.response$.pipe(delay(3000));
+
+  thirdValue$ = this.response$.pipe(delay(6000));
 
   constructor(private httpService: HttpService) {}
 
-  ngOnInit(): void {
-    this.getRandoms();
-  }
-
   getRandoms(): void {
-    this.value$ = this.httpService.getRandomNumber()
-      .pipe(
-        switchMap(value => forkJoin(
-          this.setFirstValue(value),
-          this.setSecondValue(value),
-          this.setThirdValue(value)
-      )),
-    );
-  }
-
-  private setFirstValue(value: any) {
-    return timer(0).pipe(
-      delay(0),
-      map(() => this.firstValue = value)
-    )
-  }
-
-  private setSecondValue(value: any) {
-    return timer(0).pipe(
-      delay(3000),
-      map(() => this.secondValue = value)
-    )
-  }
-
-  private setThirdValue(value: any) {
-    return timer(0).pipe(
-      delay(6000),
-      map(() => this.thirdValue = value)
-    )
+    this.request$.next();
   }
 }

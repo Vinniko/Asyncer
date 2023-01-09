@@ -1,11 +1,9 @@
-<div hidden>{{ (value$ | async) }}</div>
-
 <div class="container" >
-  <p>Первый поток: {{ firstValue }}</p>
+  <p>Первый поток: {{ firstValue$ | async }}</p>
 
-  <p>Второй поток: {{ secondValue }}</p>
+  <p>Второй поток: {{ secondValue$ | async }}</p>
 
-  <p>Третий поток: {{ thirdValue }}</p>
+  <p>Третий поток: {{ thirdValue$ | async }}</p>
 </div>
 
 <div class="buttonContainer">
